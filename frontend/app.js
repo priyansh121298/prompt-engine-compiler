@@ -431,29 +431,12 @@ Don't build features until you've nailed the bridge.`;
 
     function getModelSpecificContent(promptText, model, score) {
         if (!promptText) return '';
-        
-        // Calculate score if not passed
-        if (score === undefined && currentProjectVersions.length > 0 && activeVersionIndex >= 0) {
-            const ver = currentProjectVersions[activeVersionIndex];
-            score = ver.confidence;
-        }
-        if (score === undefined) score = 85; // Fallback
-        
-        let calculatedScore = score;
-        if (model === 'claude') {
-            calculatedScore = Math.min(99, score + 2);
-        } else if (model === 'chatgpt') {
-            calculatedScore = Math.min(97, score);
-        } else if (model === 'midjourney') {
-            const isImage = promptText.startsWith('# Visual Style:') || promptText.includes('Direct Diffusion Prompt');
-            calculatedScore = isImage ? Math.min(99, score + 3) : 0;
-        }
 
         const isImage = promptText.startsWith('# Visual Style:') || promptText.includes('Direct Diffusion Prompt');
         const sections = getNormalizedSections(promptText);
 
         if (model === 'unified') {
-            return `<!-- [COMPILER TRUST SCORE: ${calculatedScore}%] -->\n\n` + promptText;
+            return promptText;
         }
 
         if (model === 'claude') {
@@ -500,7 +483,7 @@ ${sections.constraints}
   </constraints>
 </system_prompt>`;
             }
-            return `<!-- [COMPILER TRUST SCORE: ${calculatedScore}%] -->\n\n` + claudeContent;
+            return claudeContent;
         }
 
         if (model === 'chatgpt') {
@@ -539,7 +522,7 @@ ${sections.instructions}
 ## 🚫 Constraints
 ${sections.constraints}`;
             }
-            return `# [COMPILER TRUST SCORE: ${calculatedScore}%]\n\n` + gptContent;
+            return gptContent;
         }
 
         if (model === 'midjourney') {
@@ -552,8 +535,7 @@ ${sections.constraints}`;
 The Midjourney exporter is only active for Visual Image input modes. 
 For text inputs, please use the Unified, Claude, or ChatGPT tabs.`;
             }
-            const trustStr = calculatedScore > 0 ? `${calculatedScore}%` : 'N/A';
-            return `<!-- [COMPILER TRUST SCORE: ${trustStr}] -->\n\n` + midContent;
+            return midContent;
         }
 
         return promptText;
