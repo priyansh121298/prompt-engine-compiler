@@ -49,7 +49,7 @@ async def decompile(
     x_gemini_api_key: Optional[str] = Header(None)
 ):
     # Verify API key (prefer client provided, fallback to server)
-    api_key = x_gemini_api_key or config.GEMINI_API_KEY
+    api_key = x_gemini_api_key or config.get_gemini_api_key()
     if not api_key:
         raise HTTPException(
             status_code=500,
@@ -112,7 +112,7 @@ async def optimize(
     x_gemini_api_key: Optional[str] = Header(None)
 ):
     # Verify API key (prefer client provided, fallback to server)
-    api_key = x_gemini_api_key or config.GEMINI_API_KEY
+    api_key = x_gemini_api_key or config.get_gemini_api_key()
     if not api_key:
         raise HTTPException(
             status_code=500,
@@ -147,7 +147,7 @@ async def test_system(
     request: TestSystemRequest,
     x_gemini_api_key: Optional[str] = Header(None)
 ):
-    api_key = x_gemini_api_key or config.GEMINI_API_KEY
+    api_key = x_gemini_api_key or config.get_gemini_api_key()
     if not api_key:
         raise HTTPException(
             status_code=500,
@@ -181,7 +181,7 @@ async def evolve(
     request: EvolveRequest,
     x_gemini_api_key: Optional[str] = Header(None)
 ):
-    api_key = x_gemini_api_key or config.GEMINI_API_KEY
+    api_key = x_gemini_api_key or config.get_gemini_api_key()
     if not api_key:
         raise HTTPException(
             status_code=500,
